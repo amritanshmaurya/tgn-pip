@@ -57,21 +57,33 @@ We propose two novel prompting strategies intended to enhance the complex reason
  
 Unlike conventional prompting techniques that rely solely on linear reasoning or unverified execution, TGN is a novel prompting methodology for structured tabular reasoning which introduces an iterative *analyzing–execution–validation* loop explicitly designed to operate over tabular schemas. The TGN prompting strategy on comparison with CoT, imposes structured execution and validation steps, moving away from free-form reasoning to ensure precision and data fidelity. In contrast to other prompting techniques such as DP, SCoT, ReAct, TGN adopts a linear, cyclic loop that incorporates a validation phase, ensuring that performed actions are cross-checked against the table for error correction and also avoids unnecessary explorations like ToT.
  
-We define TGN as an ordered sequence of operations over a tabular dataset where $Q$ denotes the input query, $T$ represents the tabular schema, and $R$ signifies the final answer. The TGN process is a stateful function that operates over a sequence of iterations, each comprising Analyze $A$, Execute $E$ and Validate $V$ operations over a state space $S$.
+We define TGN as an ordered sequence of operations over a tabular dataset where $`Q`$ denotes the input query, $`T`$ represents the tabular schema, and $`R`$ signifies the final answer. The TGN process is a stateful function that operates over a sequence of iterations, each comprising Analyze $`A`$, Execute $`E`$ and Validate $`V`$ operations over a state space $`S`$.
  
-$$TGN(Q, T, S_0) = R \tag{1}$$
+```math
+TGN(Q, T, S_0) = R
+```
  
-where $R = \lim_{n \to k} S_n$ and $k$ is the number of iterations until $R$ is found for a given $Q$.
+*(Equation 1)*
  
-$S_n$ can be written as:
+where $`R = \lim_{n \to k} S_n`$ and $`k`$ is the number of iterations until $`R`$ is found for a given $`Q`$.
  
-$$S_n = \mathcal{T}_n(S_{n-1}, Q, T) \tag{2}$$
+$`S_n`$ can be written as:
  
-The state $S_n \in \mathcal{S}$ at iteration $n$, initialized as $S_0 = \emptyset$, representing the initial state with no prior computations and the state transition function $\mathcal{T}_n : \mathcal{S} \times Q \times T \to \mathcal{S}$ at iteration $n$, can be defined as:
+```math
+S_n = \mathcal{T}_n(S_{n-1}, Q, T)
+```
  
-$$\mathcal{T}_n(S_{n-1}, Q, T) = V_n(E_n(A_n(Q, T, S_{n-1}), T), T) \tag{3}$$
+*(Equation 2)*
  
-Where, the analysis function $A_n(Q, T, S_{n-1}) : Q \times T \times \mathcal{S} \to P_n$ generates a reasoning about how to interpret the data grid based on $Q$, $T$, and the previous state $S_{n-1}$. It maps to a plan space $P_n \subseteq \mathcal{P}$, then the execution function $E_n(P_n, T) : \mathcal{P} \times T \to I_n$ applies operations specified in $P_n$ on $T$, producing an intermediate result $I_n \in \mathcal{I}$, followed by the validation function $V_n(I_n, T) : \mathcal{I} \times T \to \mathcal{S}$ which verifies $I_n$ against $T$ and the cycle is repeated until convergence of $R$.
+The state $`S_n \in \mathcal{S}`$ at iteration $`n`$, initialized as $`S_0 = \emptyset`$, representing the initial state with no prior computations and the state transition function $`\mathcal{T}_n : \mathcal{S} \times Q \times T \to \mathcal{S}`$ at iteration $`n`$, can be defined as:
+ 
+```math
+\mathcal{T}_n(S_{n-1}, Q, T) = V_n(E_n(A_n(Q, T, S_{n-1}), T), T)
+```
+ 
+*(Equation 3)*
+ 
+Where, the analysis function $`A_n(Q, T, S_{n-1}) : Q \times T \times \mathcal{S} \to P_n`$ generates a reasoning about how to interpret the data grid based on $`Q`$, $`T`$, and the previous state $`S_{n-1}`$. It maps to a plan space $`P_n \subseteq \mathcal{P}`$, then the execution function $`E_n(P_n, T) : \mathcal{P} \times T \to I_n`$ applies operations specified in $`P_n`$ on $`T`$, producing an intermediate result $`I_n \in \mathcal{I}`$, followed by the validation function $`V_n(I_n, T) : \mathcal{I} \times T \to \mathcal{S}`$ which verifies $`I_n`$ against $`T`$ and the cycle is repeated until convergence of $`R`$.
  
 The framework overview of TGN prompting is that it decomposes the process into three distinct stages:
  
@@ -84,17 +96,21 @@ This cycle of different stages can be repeated multiple times by the model if it
  
 In contrast to TGN's operation-centric loop, we developed another novel strategy PIP, which employs a linear, pattern-based progression to support the language model's reasoning, focused on gradual analysis. PIP decomposes the task into discrete, non-overlapping steps that ensure comprehensive coverage of the table while avoiding redundant processing. The distinction of PIP from existing prompt approaches can be viewed, as it doesn't work unconstrained like CoT and also identifies the columns for explicit progressive row selection constraint according to the query which is not present in other prompting approaches such as ToT, SCoT, and ReAct. Each intermediate step in PIP is explicitly tied to a selected row, which reduces variability in reasoning style and mitigates hallucination.
  
-The PIP process is modeled as a composite function (see Figure 2) that applies five sequential steps, each producing an intermediate output that feeds into the next, with a minimal state to track progress. To understand the structure of PIP, let $Q$ denote the input query, $T$ represent the tabular schema, and $R$ represent the answer to the query; then the prompt can be written as $PIP(Q, T) = R$, where:
+The PIP process is modeled as a composite function (see Figure 2) that applies five sequential steps, each producing an intermediate output that feeds into the next, with a minimal state to track progress. To understand the structure of PIP, let $`Q`$ denote the input query, $`T`$ represent the tabular schema, and $`R`$ represent the answer to the query; then the prompt can be written as $`PIP(Q, T) = R`$, where:
  
-$$R = F_5(F_4(F_3(F_2(F_1(Q, T), Q), C, T), Q', C)) \tag{4}$$
+```math
+R = F_5(F_4(F_3(F_2(F_1(Q, T), Q), C, T), Q', C))
+```
+ 
+*(Equation 4)*
  
 Where:
  
-- $F_1(Q, T) : T \to C$ — Identifies the columns of $T$, producing $C = \lbrace c_i \mid c_i \in \text{columns}(T) \rbrace$, where each $c_i$ is annotated with its semantic meaning.
-- $F_2(Q, C) : Q \to Q'$ — Restates the query $Q$ into a clarified version $Q'$, aligning it with the column meanings in $C$.
-- $F_3(Q', C, T) : Q' \times C \times T \to R_s$ — Extracts relevant rows $R_s \subseteq \text{rows}(T)$, selected based on a relevance measure of how well $r_j$ satisfies $Q'$.
-- $F_4(Q', R_s, C) : Q' \times R_s \times C \to I_j$ — Performs intermediate analysis on $R_s$, processing each row once to produce intermediate results $I_j = \lbrace i_j \mid i_j = \psi(r_j, C) \rbrace$, where $\psi$ is an operation based on $C$.
-- $F_5(I_j) : I \to R$ — Synthesizes the final answer $R$ by aggregating $I_j$s.
+- $`F_1(Q, T) : T \to C`$ — Identifies the columns of $`T`$, producing $`C = \lbrace c_i \mid c_i \in \text{columns}(T) \rbrace`$, where each $`c_i`$ is annotated with its semantic meaning.
+- $`F_2(Q, C) : Q \to Q'`$ — Restates the query $`Q`$ into a clarified version $`Q'`$, aligning it with the column meanings in $`C`$.
+- $`F_3(Q', C, T) : Q' \times C \times T \to R_s`$ — Extracts relevant rows $`R_s \subseteq \text{rows}(T)`$, selected based on a relevance measure of how well $`r_j`$ satisfies $`Q'`$.
+- $`F_4(Q', R_s, C) : Q' \times R_s \times C \to I_j`$ — Performs intermediate analysis on $`R_s`$, processing each row once to produce intermediate results $`I_j = \lbrace i_j \mid i_j = \psi(r_j, C) \rbrace`$, where $`\psi`$ is an operation based on $`C`$.
+- $`F_5(I_j) : I \to R`$ — Synthesizes the final answer $`R`$ by aggregating $`I_j`$s.
 This constrained sequential steps of PIP directs the model only to reason over the required rows and columns according to the query, also helps in reducing hallucination by stoping the model from unnecessary processing of whole table. In empirical experiments, we will observe the utility of TGN and PIP by evaluating their performance on two tabular datasets.
  
 ---
