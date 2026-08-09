@@ -3,7 +3,9 @@
 **Amritansh Maurya**¹ · **Navjot Singh**¹ · **Mohammed Javed**² · **Omar Moured**³
  
 ¹ Vision Intelligence Lab, IIIT Allahabad, Prayagraj, India — `{rsi2024503, navjot}@iiita.ac.in`
+
 ² iMeDIA Lab, IIIT Allahabad, Prayagraj, India — `javed@iiita.ac.in`
+
 ³ CV:HCI Lab, Karlsruhe Institute of Technology, Karlsruhe, Germany — `omar.moured@kit.edu`
  
 ---
