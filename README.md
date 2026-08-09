@@ -556,10 +556,14 @@ In this section, we share the results of our proposed frameworks on different qu
 If you find this work useful, please cite:
  
 ```bibtex
-@article{maurya2026tgnpip,
-  title   = {Efficient Table QA via TableGrid Navigation and Progressive Inference Prompting},
-  author  = {Maurya, Amritansh and Singh, Navjot and Javed, Mohammed and Moured, Omar},
-  year    = {2026}
+@misc{maurya2026efficienttableqatablegrid,
+      title={Efficient Table QA via TableGrid Navigation and Progressive Inference Prompting}, 
+      author={Amritansh Maurya and Navjot Singh and Mohammed Javed and Omar Moured},
+      year={2026},
+      eprint={2605.20254},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR},
+      url={https://arxiv.org/abs/2605.20254}, 
 }
 ```
  
