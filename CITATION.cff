@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "Efficient Table QA via TableGrid Navigation and Progressive Inference Prompting"
+authors:
+  - family-names: Maurya
+    given-names: Amritansh
+    orcid: "https://orcid.org/0009-0001-8605-6990"
+    affiliation: "Vision Intelligence Lab, IIIT Allahabad"
+  - family-names: Singh
+    given-names: Navjot
+    orcid: "https://orcid.org/0000-0003-0409-8482"
+    affiliation: "Vision Intelligence Lab, IIIT Allahabad"
+  - family-names: Javed
+    given-names: Mohammed
+    orcid: "https://orcid.org/0000-0002-3019-7401"
+    affiliation: "iMeDIA Lab, IIIT Allahabad"
+  - family-names: Moured
+    given-names: Omar
+    orcid: "https://orcid.org/0000-0003-4227-8417"
+    affiliation: "CV:HCI Lab, Karlsruhe Institute of Technology"
+year: 2026
+identifiers:
+  - type: other
+    value: "arXiv:2605.20254"
+    description: "arXiv preprint"
+repository-code: "https://github.com/amritanshmaurya/tgn-pip"
+url: "https://arxiv.org/abs/2605.20254"
+keywords:
+  - LLM
+  - Table Question Answering
+  - Prompt Engineering
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Maurya
+      given-names: Amritansh
+    - family-names: Singh
+      given-names: Navjot
+    - family-names: Javed
+      given-names: Mohammed
+    - family-names: Moured
+      given-names: Omar
+  title: "Efficient Table QA via TableGrid Navigation and Progressive Inference Prompting"
+  year: 2026
+  url: "https://arxiv.org/abs/2605.20254"
